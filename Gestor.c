@@ -1,13 +1,14 @@
 /** 
  
  * @file   Gestor.c
- * @brief  arquivo de manipulação de dados dos gestores
+ * @brief  arquivo de manipulaï¿½ï¿½o de dados dos gestores
  * 
  * @author italo
  * @date   March 2023
  
 **/
 
+#include "platform.h"
 #include "Gestor.h"
 
 /*
@@ -43,7 +44,7 @@ bool AdicionarGestor(ListaGestor** lista, Gestor gestorAtual) {
 }
 bool RemoverGestor(ListaGestor** lista, ListaGestor* gestorAtual) {
 
-	// Verifica se o gestor atual é nulo
+	// Verifica se o gestor atual ï¿½ nulo
 	if (gestorAtual == NULL) return false;
 
 	// Atualiza a lista de gestores
@@ -59,14 +60,14 @@ bool RemoverGestor(ListaGestor** lista, ListaGestor* gestorAtual) {
 			gestorAtual->prox->anter = gestorAtual->anter;
 	}
 
-	// Libera a memória do gestor atual
+	// Libera a memï¿½ria do gestor atual
 	free(gestorAtual);
 
 	return true;
 }
 bool TrocarGestor(ListaGestor* gestor1, ListaGestor* gestor2) {
 
-	// Troca os dados dos gestores usando uma variável auxiliar
+	// Troca os dados dos gestores usando uma variï¿½vel auxiliar
 	Gestor aux = gestor1->gestor;
 	gestor1->gestor = gestor2->gestor;
 	gestor2->gestor = aux;
@@ -74,7 +75,7 @@ bool TrocarGestor(ListaGestor* gestor1, ListaGestor* gestor2) {
 }
 bool EditarGestor(ListaGestor* lista, Gestor gestorEditado) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	// Atualiza o gestor na lista com os dados do gestor editado
@@ -84,7 +85,7 @@ bool EditarGestor(ListaGestor* lista, Gestor gestorEditado) {
 }
 bool OrganizaGestorrPorID(ListaGestor* lista) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	bool terminou = false;
@@ -109,7 +110,7 @@ bool OrganizaGestorrPorID(ListaGestor* lista) {
 
 ListaGestor* EncontrarGestor(ListaGestor* lista, int id) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return NULL;
 
 	ListaGestor* listaAtual = lista;
@@ -131,7 +132,7 @@ int LerFileGestor(ListaGestor** lista) {
 
 	FILE* file;
 
-	fopen_s(&file, "Data\\gestor.txt", "r");
+	file = fopen("Data/gestor.txt", "r");
 
 
 	if (file == NULL) return 2;
@@ -160,7 +161,7 @@ int SalvarFileGestor(ListaGestor* lista) {
 
 	FILE* file;
 
-	fopen_s(&file, "Data\\gestor.bin", "wb");
+	file = fopen("Data/gestor.bin", "wb");
 
 	if (file == NULL) return 2;
 

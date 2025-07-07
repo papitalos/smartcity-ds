@@ -1,14 +1,14 @@
 /** 
  
  * @file   Cliente.h
- * @brief  informações dos clientes
+ * @brief  informaï¿½ï¿½es dos clientes
  * 
  * @author italo
  * @date   March 2023
  
 **/
 
-#pragma warning(disable : 4996)
+#include "platform.h"
 
 #include "Consts.h"
 
@@ -18,7 +18,7 @@
 	typedef struct Cliente Cliente;
 	typedef struct ListaCliente ListaCliente;
 
-	//assinaturas das funções
+	//assinaturas das funï¿½ï¿½es
 	ListaCliente* EncontrarCliente(ListaCliente* lista, int id);
 
 	bool AdicionarCliente(ListaCliente** lista, Cliente clienteAtual);

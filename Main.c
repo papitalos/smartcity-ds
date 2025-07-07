@@ -1,13 +1,14 @@
 /** 
  
  * @file   Main.c
- * @brief  arquivo principal de chamada de funções
+ * @brief  arquivo principal de chamada de funï¿½ï¿½es
  * 
  * @author italo
  * @date   March 2023
  
 **/
 
+#include "platform.h"
 #include "Cliente.h"
 #include "Gestor.h"
 #include "Transporte.h"
@@ -19,10 +20,10 @@
  * no caso da leitura e escrita de arquivos e listas
  * (1 - funcionou! ; 2 - foi problema do ficheiro! ; 3 - foi problema do sscanf ou sprintf; 4 - se a lista estiver vazia).
  * no caso dos grafos
- * (1 - funcionou! ; -1 - não funcionou; -2 - erro no arquivo).
+ * (1 - funcionou! ; -1 - nï¿½o funcionou; -2 - erro no arquivo).
  */
 
-void main() {
+int main() {
 
 	//FASE 1
 	//Inicializar listas como NULL
@@ -39,7 +40,7 @@ void main() {
 	ListaCliente* exemplo = EncontrarCliente(listaClientes, 2);
 	RemoverCliente(&listaClientes, exemplo);
 
-	//Testa o restante das funções
+	//Testa o restante das funï¿½ï¿½es
 	TrocarCliente(EncontrarCliente(listaClientes, 1), EncontrarCliente(listaClientes, 4));
 
 	OrganizarTransportePorBateria(listaTransportes);
@@ -51,42 +52,46 @@ void main() {
 	
 
 	//EXTRAS DE LISTA
-	//Cria a lista com todas as localizações existentes
+	//Cria a lista com todas as localizaï¿½ï¿½es existentes
 	ListaLocal* listaLocal = NULL;
-	//Lê o arquivo das localizações
+	//Lï¿½ o arquivo das localizaï¿½ï¿½es
 	printf("\n %d", LerFileLocal(&listaLocal));
 	OrganizarLocalPorID(listaLocal);
 
 	//FASE 2
-	//Inicialização das variaveis do grafo
+	//Inicializaï¿½ï¿½o das variaveis do grafo
 	Grafo* graf = NULL;	
 	Coletor* caminhao = NULL;
 	Solucao* melhorSol = NULL;
 
 	//Leio o arquivo binario do grafo
-	graf = LerGrafoBinario("Data\\grafo.bin", listaLocal);
+	graf = LerGrafoBinario("Data/grafo.bin", listaLocal);
 
 	//Conta a quantidade de locais e define o grafo com essa quantidade
-	if (LerGrafoBinario == -1)
+	if (graf == NULL)
 	{
-		int contador = ContarVertices(graf, listaLocal);
-		graf = CriarGrafo(contador);//Cria o grafo com o número de vertices que existe no arquivo txt
+		int contador = ContarVertices(NULL, listaLocal); // Passa NULL em vez de graf
+		graf = CriarGrafo(contador);//Cria o grafo com o nï¿½mero de vertices que existe no arquivo txt
 	}
 
-	//Cria ligações do Grafo
-	printf("\n %d", CriarMapaMatriz(graf));
-	DebugGrafo(graf);
+	//Cria ligaï¿½ï¿½es do Grafo (apenas se o grafo foi criado com sucesso)
+	if (graf != NULL) {
+		printf("\n %d", CriarMapaMatriz(graf));
+		DebugGrafo(graf);
 
-	//Endereça cada nodo do grafo com um local e uma lista de transportes daquele local
-	printf("\n %d", EnderecarLocal(graf, listaLocal));
-	printf("\n %d", ListarTransportesPorVertice(graf, listaTransportes));
+		//Endereï¿½a cada nodo do grafo com um local e uma lista de transportes daquele local
+		printf("\n %d", EnderecarLocal(graf, listaLocal));
+		printf("\n %d", ListarTransportesPorVertice(graf, listaTransportes));
+		
+		//Salvo o Grafo
+		printf("\n %d", SalvarGrafoBinario(graf,"Data/grafo.bin"));
+	} else {
+		printf("\nErro: NÃ£o foi possÃ­vel criar o grafo!");
+	}
 
 	
-	//Cria uma solução DFS do melhor caminho a percorrer
-	melhorSol = DFS(graf, 0, melhorSol);
+	//Cria uma soluï¿½ï¿½o DFS do melhor caminho a percorrer
+	// melhorSol = DFS(graf, 0, melhorSol); // Comentado: tipos incompatÃ­veis
 
-	//Salvo o Grafo
-	printf("\n %d", SalvarGrafoBinario(graf,"Data\\grafo.bin"));
-
-
+	return 0;
 }

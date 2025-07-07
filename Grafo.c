@@ -1,13 +1,14 @@
 /** 
  
  * @file   Grafo.c
- * @brief  Funções de manipulação e exploração do grafo
+ * @brief  Funï¿½ï¿½es de manipulaï¿½ï¿½o e exploraï¿½ï¿½o do grafo
  * 
  * @author italo
  * @date   May 2023
  
 **/
 
+#include "platform.h"
 #include "Grafo.h"
 #include "Caminho.h"
 #include "Transporte.h"
@@ -16,35 +17,46 @@
 
 #pragma region FUNC_DE_CRIACAO
 
-//Função para criar o grafo
+//Funï¿½ï¿½o para criar o grafo
 Grafo* CriarGrafo(int nVert) {
-	int i;
+	int i, j;
 
-	//aloca espaço para um grafo
+	//aloca espaï¿½o para um grafo
 	Grafo* graf = (Grafo*)malloc(sizeof(Grafo));
-	if (graf == NULL) return graf;
-	graf->vert = (Vertice*)malloc(sizeof(Vertice*));
-	if (graf->vert == NULL) return graf;
+	if (graf == NULL) return NULL;
+	
+	// Aloca espaÃ§o para nVert vÃ©rtices (nÃ£o apenas 1 ponteiro!)
+	graf->vert = (Vertice*)malloc(sizeof(Vertice) * nVert);
+	if (graf->vert == NULL) {
+		free(graf);
+		return NULL;
+	}
 
-
-	//define o numero de vertices e começa com 0 arestas
+	//define o numero de vertices e comeï¿½a com 0 arestas
 	graf->nVertices = nVert;
 	graf->nArestas = 0;
+	
+	// Inicializa a matriz de adjacÃªncia
+	for (i = 0; i < MAX_VERTICES; i++) {
+		for (j = 0; j < MAX_VERTICES; j++) {
+			graf->matrizAdj[i][j] = 0;
+		}
+	}
+	
 	for (i = 0; i < nVert; i++) {
 		//define que cada adjacencia (1,2,3...)  de cada cabeca como nula
 		graf->vert[i].cabeca = NULL;
 		graf->vert[i].foiVisitado = false;
-
 	}
 
 	return graf;
 }
 
-// Função para destruir o grafo
+// Funï¿½ï¿½o para destruir o grafo
 void DestruirGrafo(Grafo* graf) {
 	if (graf == NULL) return;
 
-	// Libera a memória alocada para cada lista de adjacências
+	// Libera a memï¿½ria alocada para cada lista de adjacï¿½ncias
 	for (int i = 0; i < graf->nVertices; i++) {
 		Adjacencia* atual = graf->vert[i].cabeca;
 		while (atual != NULL) {
@@ -54,14 +66,16 @@ void DestruirGrafo(Grafo* graf) {
 		}
 	}
 
+	// Libera o array de vÃ©rtices
+	free(graf->vert);
 	
-	// Libera a memória alocada para o grafo
+	// Libera a memï¿½ria alocada para o grafo
 	free(graf);
 }
 
-//Função que cria uma adjacencia
+//Funï¿½ï¿½o que cria uma adjacencia
 Adjacencia* CriaAdjacencia(int v, float peso) {
-	//aloca espaço temporario para um nó da adjacencia
+	//aloca espaï¿½o temporario para um nï¿½ da adjacencia
 	Adjacencia* temp = (Adjacencia*)malloc(sizeof(Adjacencia));
 
 	if (temp == NULL) return temp;
@@ -73,7 +87,7 @@ Adjacencia* CriaAdjacencia(int v, float peso) {
 	return(temp);
 }
 
-//Função para contar os vertices a partir da lista de localizações
+//Funï¿½ï¿½o para contar os vertices a partir da lista de localizaï¿½ï¿½es
 int ContarVertices(Grafo* graf, ListaLocal* lista) {
 	if (graf == NULL) {
 		int contador = 0;
@@ -89,32 +103,38 @@ int ContarVertices(Grafo* graf, ListaLocal* lista) {
 	return 1;
 }
 
-//Função para endereçar cada vertice com um local
+//Funï¿½ï¿½o para endereï¿½ar cada vertice com um local
 int EnderecarLocal(Grafo* graf,ListaLocal* lista) {
 	
-	if (lista == NULL) return -1;
+	if (graf == NULL || lista == NULL) return -1;
 
 	for (int i = 0; i < graf->nVertices; i++)
 	{
-		char* geocode = EncontrarLocal(lista, i);
-		graf->vert[i].cabeca->local.geocode = geocode;
+		// SÃ³ tenta endereÃ§ar se hÃ¡ uma adjacÃªncia criada
+		if (graf->vert[i].cabeca != NULL) {
+			char* geocode = EncontrarLocal(lista, i);
+			graf->vert[i].cabeca->local.geocode = geocode;
+		}
 	}
 	return 1;
 }
 
-//Função para endereçar uma lista de transportes para um geocode especifico
+//Funï¿½ï¿½o para endereï¿½ar uma lista de transportes para um geocode especifico
 int ListarTransportesPorVertice(Grafo* graf, ListaTransporte* lista) {
 
-	if (lista == NULL) return -1;
+	if (graf == NULL || lista == NULL) return -1;
 
 	for (int i = 0; i < graf->nVertices; i++)
 	{
-		graf->vert[i].cabeca->local.TransportesGeocode = ListarPorGeocode(lista, graf->vert[i].cabeca->local.geocode);
+		// SÃ³ tenta endereÃ§ar se hÃ¡ uma adjacÃªncia criada
+		if (graf->vert[i].cabeca != NULL) {
+			graf->vert[i].cabeca->local.TransportesGeocode = ListarPorGeocode(lista, graf->vert[i].cabeca->local.geocode);
+		}
 	}
 	return 1;
 }
 
-//Função para criar uma aresta
+//Funï¿½ï¿½o para criar uma aresta
 int CriaAresta(Grafo* graf, int verIni, int verFin, float peso) {
 	//Verifica se o grafo existe
 	if (!graf) { return 2;}
@@ -122,21 +142,23 @@ int CriaAresta(Grafo* graf, int verIni, int verFin, float peso) {
 	if (verFin < 0 || verFin >= graf->nVertices) { return 3;}
 	if (verIni < 0 || verFin >= graf->nVertices) { return 3;}
 		
-	//usa a função de cima para criar a adjacencia com o vertice final(destino) e o peso
+	//usa a funï¿½ï¿½o de cima para criar a adjacencia com o vertice final(destino) e o peso
 	Adjacencia* novaAdj = CriaAdjacencia(verFin, peso);
 
 	//coloco a nova adjacencia linkada no vertice inicial da lista
-	novaAdj->prox = graf->vert[verIni].cabeca; //o proximo elemento da lista passa receber a cabeça da lista
-	graf->vert[verIni].cabeca = novaAdj; // a nova adjacencia passa a ser a cabeça da lista
+	novaAdj->prox = graf->vert[verIni].cabeca; //o proximo elemento da lista passa receber a cabeï¿½a da lista
+	graf->vert[verIni].cabeca = novaAdj; // a nova adjacencia passa a ser a cabeï¿½a da lista
 	graf->nArestas++; //atualiza o numero de arestas
 	return 1;
 }
 
-//Função que liga os vertices as adjacencias a partir de um mapa matriz
+//Funï¿½ï¿½o que liga os vertices as adjacencias a partir de um mapa matriz
 int CriarMapaMatriz(Grafo* graf) {
+	if (graf == NULL) return -1;
+	
 	//para cada linha e coluna dentro do numero max de vertices da matriz
-	for (int i = 0; i < MAX_VERTICES; i++) {
-		for (int j = 0; j < MAX_VERTICES; j++) {
+	for (int i = 0; i < graf->nVertices && i < MAX_VERTICES; i++) {
+		for (int j = 0; j < graf->nVertices && j < MAX_VERTICES; j++) {
 			if (graf->matrizAdj[i][j] != 0) {
 				//cria uma aresta no mapa, ligando i e j com o peso da matriz
 				CriaAresta(graf, i, j, graf->matrizAdj[i][j]);
@@ -146,14 +168,19 @@ int CriarMapaMatriz(Grafo* graf) {
 	return 1;
 }
 
-//Função para debugar o grafo
+//Funï¿½ï¿½o para debugar o grafo
 void DebugGrafo(Grafo* graf) {
+	if (graf == NULL) {
+		printf("Grafo Ã© NULL!\n");
+		return;
+	}
+	
 	printf("\n---------------- Grafo ----------------\n");
 	printf("Numero de vertices: %d\n", graf->nVertices);
 	printf("Numero de arestas: %d\n", graf->nArestas);
 	printf("Matriz de Adjacencia:\n");
-	for (int i = 0; i < graf->nVertices; i++) {
-		for (int j = 0; j < graf->nVertices; j++) {
+	for (int i = 0; i < graf->nVertices && i < MAX_VERTICES; i++) {
+		for (int j = 0; j < graf->nVertices && j < MAX_VERTICES; j++) {
 			if (graf->matrizAdj[i][j] > 99) {
 				printf("%.0f", graf->matrizAdj[i][j]);
 			}
@@ -180,23 +207,23 @@ void DebugGrafo(Grafo* graf) {
 
 #pragma region FUNC_SUPORTE
 
-	//Função que cria um caminhao
+	//Funï¿½ï¿½o que cria um caminhao
 	int CriarCaminhao(Coletor* novoColetor) {
-		//Aloca espaço para o caminhão
+		//Aloca espaï¿½o para o caminhï¿½o
 		novoColetor = (Coletor*)malloc(sizeof(Coletor*));
 
-		//Verifica se alocou espaço corretamente
+		//Verifica se alocou espaï¿½o corretamente
 		if (novoColetor == NULL) return -1; 
 
-		//Define o peso atual do caminhão como 0
+		//Define o peso atual do caminhï¿½o como 0
 		novoColetor->pesoAtual = 0;
 
-		/*Espaço para caso venha adicionar coisas extras para o caminhão*/
+		/*Espaï¿½o para caso venha adicionar coisas extras para o caminhï¿½o*/
 
 		return 1;
 	}
 
-	//Função que cria um NodoPath para a lista da solução atual
+	//Funï¿½ï¿½o que cria um NodoPath para a lista da soluï¿½ï¿½o atual
 	Trajeto CriarNodoPath(Adjacencia* adjacencia) {
 		
 		//Cria um novo nodoPath
@@ -209,20 +236,20 @@ void DebugGrafo(Grafo* graf) {
 		return newNodoPath;
 	}
 
-	//Função que adiciona o NodoPath na lista de uma solução
+	//Funï¿½ï¿½o que adiciona o NodoPath na lista de uma soluï¿½ï¿½o
 	int AdicionarNodoPath(Solucao** path, Trajeto trajeto) {
 
-		//Aloca espaço para o novo nodo da solução
+		//Aloca espaï¿½o para o novo nodo da soluï¿½ï¿½o
 		Solucao* novoNodo = (Solucao*)malloc(sizeof(Solucao));
 
-		//Verifica se a alocação funcionou
+		//Verifica se a alocaï¿½ï¿½o funcionou
 		if (novoNodo == NULL) return -1;
 
 		//Define as variaveis do novo nodo 
 		novoNodo->TrajetoParcial = trajeto;
 		novoNodo->prox = NULL;
 
-		//Verifica se é o primeiro nodo a adicionar a lista da solução
+		//Verifica se ï¿½ o primeiro nodo a adicionar a lista da soluï¿½ï¿½o
 		if (*path == NULL) {
 			*path = novoNodo;
 		}
@@ -252,18 +279,18 @@ void DebugGrafo(Grafo* graf) {
 		return 1;
 	}
 
-	//Função que remove o ultimo NodoPath da lista de uma solução
+	//Funï¿½ï¿½o que remove o ultimo NodoPath da lista de uma soluï¿½ï¿½o
 	int RemoverUltimoNodoPath(Solucao** path) {
 
-		//Verifica se existe algum nodo na lista da solução
+		//Verifica se existe algum nodo na lista da soluï¿½ï¿½o
 		if (*path == NULL) {
-			return 1; //Não há nada para remover
+			return 1; //Nï¿½o hï¿½ nada para remover
 		}
 
 		Solucao* nodoRemover = *path;
 		Solucao* nodoAnterior = NULL;
 
-		//Percorre a lista até chegar ao último nó
+		//Percorre a lista atï¿½ chegar ao ï¿½ltimo nï¿½
 		while (nodoRemover->prox != NULL) {
 			nodoAnterior = nodoRemover;
 			nodoRemover = nodoRemover->prox;
@@ -272,7 +299,7 @@ void DebugGrafo(Grafo* graf) {
 		//Atualiza o tamanho do caminho atual
 		(*path)->tamanho--;
 
-		//Remove o último nó do caminho atual
+		//Remove o ï¿½ltimo nï¿½ do caminho atual
 		if (nodoAnterior == NULL) {
 			*path = NULL; //O caminho ficou vazio
 		}
@@ -283,7 +310,7 @@ void DebugGrafo(Grafo* graf) {
 		return 1;
 	}
 
-	//Função que calcula a distancia total de qualquer solução
+	//Funï¿½ï¿½o que calcula a distancia total de qualquer soluï¿½ï¿½o
 	int CalcularDistanciaTotal(Solucao* solCalc) {
 
 		if (solCalc == NULL) return -1; //Verifica se a solucao existe
@@ -297,7 +324,7 @@ void DebugGrafo(Grafo* graf) {
 		return distancia;
 	}
 
-	//Função que calcula a melhor solução de todas de acordo com a distancia
+	//Funï¿½ï¿½o que calcula a melhor soluï¿½ï¿½o de todas de acordo com a distancia
 	Solucao* CalcularMelhorSolucao(Solucao* solAtual, Solucao* solMelhor) {
 		 
 		//Caso seja Nulo, ou seja a primeira vez
@@ -316,7 +343,7 @@ void DebugGrafo(Grafo* graf) {
 		int distSolMelhor = CalcularDistanciaTotal(solMelhor); 
 		int distSolAtual = CalcularDistanciaTotal(solAtual);
 
-		// Verifica se a distância total do trajeto atual é menor que a da melhor solução
+		// Verifica se a distï¿½ncia total do trajeto atual ï¿½ menor que a da melhor soluï¿½ï¿½o
 		if (distSolAtual < distSolMelhor) {
 			solProvisoria = NULL;
 			while (solAtual != NULL) {	
@@ -325,11 +352,11 @@ void DebugGrafo(Grafo* graf) {
 			}
 			solMelhor = solProvisoria;
 		}
-		//ImprimirSolucao(solMelhor);//Imprime a melhor solução percorrida
+		//ImprimirSolucao(solMelhor);//Imprime a melhor soluï¿½ï¿½o percorrida
 		return solMelhor;
 	}
 
-	//Função para debugar os caminhos de todas soluções percorridas
+	//Funï¿½ï¿½o para debugar os caminhos de todas soluï¿½ï¿½es percorridas
 	void ImprimirCaminho(Solucao* solucao) {
 		if (solucao == NULL) {
 			printf("Caminho vazio.\n");
@@ -344,7 +371,7 @@ void DebugGrafo(Grafo* graf) {
 		printf("\n");
 	}
 
-	//Função para debugar o melhor caminho de todas as soluções percorridas
+	//Funï¿½ï¿½o para debugar o melhor caminho de todas as soluï¿½ï¿½es percorridas
 	void ImprimirSolucao(Solucao* solucao) {
 		if (solucao == NULL) {
 			printf("Caminho vazio.\n");
@@ -363,24 +390,24 @@ void DebugGrafo(Grafo* graf) {
 #pragma endregion
 
 #pragma region FUNC_DE_SEARCH
-	//Função DFS
+	//Funï¿½ï¿½o DFS
 	int DFS(Grafo* graf, int vertAtual, Solucao* solAtual) {
 
-		//Verificações das variaveis
+		//Verificaï¿½ï¿½es das variaveis
 		if (graf == NULL || vertAtual < 0) return -1;
 
-		//Cria uma suposta melhor solução com valor estático
+		//Cria uma suposta melhor soluï¿½ï¿½o com valor estï¿½tico
 		static Solucao* solMelhor;
 
-		//Marca o vértice atual como visitado
+		//Marca o vï¿½rtice atual como visitado
 		graf->vert[vertAtual].foiVisitado = true;
 		
-		//Percorre as adjacências do vértice atual
+		//Percorre as adjacï¿½ncias do vï¿½rtice atual
 		Adjacencia* adj = graf->vert[vertAtual].cabeca;
 		while (adj != NULL) {
 			int proxVertice = adj->vertice;
 
-			//Se o vertice não foi visitado e tem adjacencia com o vertice atual
+			//Se o vertice nï¿½o foi visitado e tem adjacencia com o vertice atual
 			if (!graf->vert[proxVertice].foiVisitado && graf->matrizAdj[vertAtual][proxVertice] != 0) {
 
 				//Adiciona ao caminho atual
@@ -395,14 +422,14 @@ void DebugGrafo(Grafo* graf) {
 			adj = adj->prox;
 		}
 
-		//Ao percorrer tudo calcula a melhor solução e imprime o caminho percorrido
+		//Ao percorrer tudo calcula a melhor soluï¿½ï¿½o e imprime o caminho percorrido
 		if (adj == NULL) {
 			//ImprimirCaminho(solAtual); //Imprime todos os caminhos percorridos
 			solMelhor = CalcularMelhorSolucao(solAtual, solMelhor);
 	
 		}
 		
-		//Desmarca o vértice atual como visitado e remove do caminho atual
+		//Desmarca o vï¿½rtice atual como visitado e remove do caminho atual
 		graf->vert[vertAtual].foiVisitado = false;
 		RemoverUltimoNodoPath(&solAtual);
 
@@ -415,16 +442,16 @@ void DebugGrafo(Grafo* graf) {
 
 #pragma region FUNC_FILES
 
-	//Função para salvar o grafo em um arquivo binário
+	//Funï¿½ï¿½o para salvar o grafo em um arquivo binï¿½rio
 	int SalvarGrafoBinario(Grafo* graf, char* fileName) {
 		//Verifica se o grafo existe
 		if (graf == NULL) return -1;
 		
-		//Abre o arquivo binário em modo de escrita
+		//Abre o arquivo binï¿½rio em modo de escrita
 		FILE* file = fopen(fileName, "wb");
 		if (file == NULL) return -1;
 
-		//Escreve o número de vértices e o número de arestas no arquivo
+		//Escreve o nï¿½mero de vï¿½rtices e o nï¿½mero de arestas no arquivo
 		fwrite(&(graf->nVertices), sizeof(int), 1, file);
 		fwrite(&(graf->nArestas), sizeof(int), 1, file);
 
@@ -433,7 +460,7 @@ void DebugGrafo(Grafo* graf) {
 				fwrite(&(graf->matrizAdj[i][j]), sizeof(int), 1, file);
 			}
 		}
-		// Escreve os vértices e suas adjacências no arquivo
+		// Escreve os vï¿½rtices e suas adjacï¿½ncias no arquivo
 		for (int i = 0; i < graf->nVertices; i++) {
 			Adjacencia* adj = graf->vert[i].cabeca;
 			while (adj != NULL) {
@@ -454,22 +481,22 @@ void DebugGrafo(Grafo* graf) {
 		return 1;
 	}
 
-	// Função para ler o grafo de um arquivo binário
+	// Funï¿½ï¿½o para ler o grafo de um arquivo binï¿½rio
 	Grafo* LerGrafoBinario(char* fileName, ListaLocal* lista) {
-		// Abre o arquivo binário em modo de leitura
+		// Abre o arquivo binï¿½rio em modo de leitura
 		FILE* file = fopen(fileName, "rb");
-		if (file == NULL) return -1;
+		if (file == NULL) return NULL;
 
-		// Lê o número de vértices e o número de arestas do arquivo
+		// Lï¿½ o nï¿½mero de vï¿½rtices e o nï¿½mero de arestas do arquivo
 		int nVertices = 0, nArestas = 0;
 		fread(&nVertices, sizeof(int), 1, file);
 		fread(&nArestas, sizeof(int), 1, file);
 
-		// Cria o grafo com o número de vértices lido do arquivo
+		// Cria o grafo com o nï¿½mero de vï¿½rtices lido do arquivo
 		Grafo * graf = CriarGrafo(nVertices);
 
 
-		// Lê a matriz de adjacência do arquivo
+		// Lï¿½ a matriz de adjacï¿½ncia do arquivo
 		float tempMatriz[MAX_VERTICES][MAX_VERTICES] = { 0 };
 		for (int i = 0; i < nVertices; i++) {
 			for (int j = 0; j < nVertices; j++) {
@@ -495,7 +522,7 @@ void DebugGrafo(Grafo* graf) {
 			}
 
 			if (EncontrarLocal(lista, i) == NULL) {
-				// Cria uma nova localização e adiciona à lista
+				// Cria uma nova localizaï¿½ï¿½o e adiciona ï¿½ lista
 				AdicionarLocalPorGeocode(&lista, geocode, i);
 			}
 		}

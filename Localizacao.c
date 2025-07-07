@@ -1,12 +1,13 @@
 /** 
  
  * @file   Localizacao.c
- * @brief  Funções para salvar e ler todas as localizações existentes no mapa atual
+ * @brief  Funï¿½ï¿½es para salvar e ler todas as localizaï¿½ï¿½es existentes no mapa atual
  * 
  * @author italo
  * @date   May 2023
  
 **/
+#include "platform.h"
 #include "Localizacao.h"
 
 bool AdicionarLocal(ListaLocal** lista, Local localAtual) {
@@ -61,7 +62,7 @@ bool AdicionarLocalPorGeocode(ListaLocal** lista, char* geocode, int id) {
 }
 bool RemoverLocal(ListaLocal** lista, ListaLocal* localAtual) {
 
-	// Verifica se o local atual é nulo
+	// Verifica se o local atual ï¿½ nulo
 	if (localAtual == NULL) return false;
 
 	// Atualiza a lista de locais
@@ -77,14 +78,14 @@ bool RemoverLocal(ListaLocal** lista, ListaLocal* localAtual) {
 			localAtual->prox->anter = localAtual->anter;
 	}
 
-	// Libera a memória do local atual
+	// Libera a memï¿½ria do local atual
 	free(localAtual);
 
 	return true;
 }
 bool TrocarLocal(ListaLocal* local1, ListaLocal* local2) {
 
-	// Troca os dados dos locais usando uma variável auxiliar
+	// Troca os dados dos locais usando uma variï¿½vel auxiliar
 	Local aux = local1->local;
 	local1->local = local2->local;
 	local2->local = aux;
@@ -92,7 +93,7 @@ bool TrocarLocal(ListaLocal* local1, ListaLocal* local2) {
 }
 bool EditarLocal(ListaLocal* lista, Local localEditado) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	// Atualiza o transporte na lista com os dados do transporte editado
@@ -102,7 +103,7 @@ bool EditarLocal(ListaLocal* lista, Local localEditado) {
 }
 bool OrganizarLocalPorID(ListaLocal* lista) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	bool terminou = false;
@@ -127,7 +128,7 @@ bool OrganizarLocalPorID(ListaLocal* lista) {
 
 char* EncontrarLocal(ListaLocal* lista, int id) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return NULL;
 
 	ListaLocal* listaAtual = lista;
@@ -148,7 +149,7 @@ int LerFileLocal(ListaLocal** lista) {
 
 	FILE* file;
 
-	fopen_s(&file, "Data\\local.txt", "r");
+	file = fopen("Data/local.txt", "r");
 
 
 	if (file == NULL) return 2;
@@ -174,7 +175,7 @@ int SalvarFileLocal(ListaLocal* lista) {
 
 	FILE* file;
 
-	fopen_s(&file, "Data\\transporte.bin", "wb");
+	file = fopen("Data/transporte.bin", "wb");
 
 	if (file == NULL) return 2;
 

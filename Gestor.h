@@ -1,14 +1,14 @@
 /**
 
  * @file   Gestor.h
- * @brief  informações dos gestores
+ * @brief  informaï¿½ï¿½es dos gestores
  *
  * @author italo
  * @date   March 2023
 
 **/
 
-#pragma warning(disable : 4996)
+#include "platform.h"
 
 #include "Consts.h"
 
@@ -18,7 +18,7 @@
 typedef struct Gestor Gestor;
 typedef struct ListaGestor ListaGestor;
 
-//assinaturas das funções
+//assinaturas das funï¿½ï¿½es
 ListaGestor* EncontrarGestor(ListaGestor* lista, int id);
 
 bool AdicionarGestor(ListaGestor** lista, Gestor gestorAtual);

@@ -1,14 +1,14 @@
 /**
 
  * @file   Transporte.h
- * @brief  informações dos transportes
+ * @brief  informaï¿½ï¿½es dos transportes
  *
  * @author italo
  * @date   March 2023
 
 **/
 
-#pragma warning(disable : 4996)
+#include "platform.h"
 
 #include "Consts.h"
 
@@ -19,7 +19,7 @@
 typedef struct Localizacao Local;
 typedef struct ListaLocalizacao ListaLocal;
 
-//Assinaturas das funções
+//Assinaturas das funï¿½ï¿½es
 char* EncontrarLocal(ListaLocal* lista, int id);
 
 bool AdicionarLocal(ListaLocal** lista, Local localAtual);

@@ -1,14 +1,14 @@
 /** 
  
  * @file   Caminho.h
- * @brief  Estrutura de dados para guardar as informações dos caminhos percorridos
+ * @brief  Estrutura de dados para guardar as informaï¿½ï¿½es dos caminhos percorridos
  * 
  * @author italo
  * @date   May 2023
  
 **/
 
-#pragma warning(disable : 4996)
+#include "platform.h"
 
 #include "Consts.h"
 

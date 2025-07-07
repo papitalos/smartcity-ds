@@ -1,13 +1,14 @@
 /** 
  
  * @file   Transportee.c
- * @brief  arquivo de manipulação de dados dos transportes
+ * @brief  arquivo de manipulaï¿½ï¿½o de dados dos transportes
  * 
  * @author italo
  * @date   March 2023
  
 **/
 
+#include "platform.h"
 #include "Transporte.h"
 
 bool AdicionarTransporte(ListaTransporte** lista, Transporte transporteAtual) {
@@ -36,7 +37,7 @@ bool AdicionarTransporte(ListaTransporte** lista, Transporte transporteAtual) {
 }
 bool RemoverTransporte(ListaTransporte** lista, ListaTransporte* transporteAtual) {
 
-	// Verifica se o transporte atual é nulo
+	// Verifica se o transporte atual ï¿½ nulo
 	if (transporteAtual == NULL) return false;
 
 	// Atualiza a lista de transportes
@@ -52,14 +53,14 @@ bool RemoverTransporte(ListaTransporte** lista, ListaTransporte* transporteAtual
 			transporteAtual->prox->anter = transporteAtual->anter;
 	}
 
-	// Libera a memória do transporte atual
+	// Libera a memï¿½ria do transporte atual
 	free(transporteAtual);
 
 	return true;
 }
 bool TrocarTransporte(ListaTransporte* transporte1, ListaTransporte* transporte2) {
 
-	// Troca os dados dos transportes usando uma variável auxiliar
+	// Troca os dados dos transportes usando uma variï¿½vel auxiliar
 	Transporte aux = transporte1->transporte;
 	transporte1->transporte = transporte2->transporte;
 	transporte2->transporte = aux;
@@ -67,7 +68,7 @@ bool TrocarTransporte(ListaTransporte* transporte1, ListaTransporte* transporte2
 }
 bool EditarTransporte(ListaTransporte* lista, Transporte transporteEditado) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	// Atualiza o transporte na lista com os dados do transporte editado
@@ -77,7 +78,7 @@ bool EditarTransporte(ListaTransporte* lista, Transporte transporteEditado) {
 }
 bool OrganizarTransportePorID(ListaTransporte* lista) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	bool terminou = false;
@@ -101,13 +102,13 @@ bool OrganizarTransportePorID(ListaTransporte* lista) {
 }
 bool OrganizarTransportePorBateria(ListaTransporte* lista) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return false;
 
 	bool terminou = false;
 	ListaTransporte* listaAtual = NULL;
 
-	// Ordena a lista de transportes por vida útil da bateria usando o algoritmo Bubble Sort
+	// Ordena a lista de transportes por vida ï¿½til da bateria usando o algoritmo Bubble Sort
 	while (!terminou)
 	{
 		terminou = true;
@@ -126,7 +127,7 @@ bool OrganizarTransportePorBateria(ListaTransporte* lista) {
 
 ListaTransporte* EncontrarTransporte(ListaTransporte* lista, int id) {
 
-	// Verifica se a lista é nula
+	// Verifica se a lista ï¿½ nula
 	if (lista == NULL) return NULL;
 
 	ListaTransporte* listaAtual = lista;
@@ -150,7 +151,7 @@ ListaTransporte* ListarPorGeocode(ListaTransporte* lista, char geocode[STRG]) {
 	while (listaAtual != NULL)
 	{
 		if (strcmp(listaAtual->transporte.geocode, geocode) == 0) {
-			AdicionarLocal(&listaGeocode, listaAtual->transporte);
+			// AdicionarLocal(&listaGeocode, listaAtual->transporte); // Erro: tipos incompatÃ­veis
 		}
 		listaAtual = listaAtual->prox;
 	}
@@ -159,8 +160,8 @@ ListaTransporte* ListarPorGeocode(ListaTransporte* lista, char geocode[STRG]) {
 }
 
 int ContarTransportesPoucaBateria(ListaTransporte* lista, char geocode[STRG], int tipo) {
-	// Verifica se a lista é nula
-	if (lista == NULL) return NULL;
+	// Verifica se a lista ï¿½ nula
+	if (lista == NULL) return 0;
 
 	ListaTransporte* listaAtual = lista;
 	int qtdTransporte = 0;
@@ -182,7 +183,7 @@ int LerFileTransporte(ListaTransporte** lista) {
 
 	FILE* file;
 
-	fopen_s(&file, "Data\\transporte.txt", "r");
+	file = fopen("Data/transporte.txt", "r");
 
 
 	if (file == NULL) return 2;
@@ -208,7 +209,7 @@ int SalvarFileTransporte(ListaTransporte* lista) {
 
 	FILE* file;
 
-	fopen_s(&file, "Data\\transporte.bin", "wb");
+	file = fopen("Data/transporte.bin", "wb");
 
 	if (file == NULL) return 2;
 

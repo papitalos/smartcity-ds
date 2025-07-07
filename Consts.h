@@ -13,12 +13,15 @@
 
 #pragma warning(disable : 4996)
 
+// Incluir compatibilidade de plataforma
+#include "platform.h"
 
 //bibliotecas usadas
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <string.h>
 
 //talvez venha a usar
 #include <math.h>

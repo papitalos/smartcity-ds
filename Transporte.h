@@ -1,14 +1,14 @@
 /**
 
  * @file   Transporte.h
- * @brief  informações dos transportes
+ * @brief  informaï¿½ï¿½es dos transportes
  *
  * @author italo
  * @date   March 2023
 
 **/
 
-#pragma warning(disable : 4996)
+#include "platform.h"
 
 #include "Consts.h"
 
@@ -23,7 +23,7 @@ typedef enum {
 	skate
 } TipoTransporte;
 
-//assinaturas das funções
+//assinaturas das funï¿½ï¿½es
 ListaTransporte* EncontrarTransporte(ListaTransporte* lista, int id);
 ListaTransporte* ListarPorGeocode(ListaTransporte* lista, char geocode[STRG]);
 
@@ -44,7 +44,7 @@ struct Transporte {
 	TipoTransporte tipo;
 	float bateria;
 	float custo;
-	char geocode[STRG]; //geocode de onde o transporte está
+	char geocode[STRG]; //geocode de onde o transporte estï¿½
 	int locatorio;
 };
 

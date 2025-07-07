@@ -1,14 +1,14 @@
 /**
 
  * @file   Grafo.h
- * @brief  definição das structs do grafo
+ * @brief  definiï¿½ï¿½o das structs do grafo
  *
  * @author italo
  * @date   May 2023
 
 **/
 
-#pragma warning(disable : 4996)
+#include "platform.h"
 
 #include "Consts.h"
 #include "Caminho.h"
@@ -24,7 +24,7 @@ typedef struct NodosAdjacentes Adjacencia;
 typedef struct NodoVertice Vertice;
 typedef struct AdjFile AdjFile;
 
-//Assinaturas das funções do grafo e DFS
+//Assinaturas das funï¿½ï¿½es do grafo e DFS
 Grafo* CriarGrafo(int vert);
 Grafo* LerGrafoBinario(char* fileName, ListaLocal* lista);
 Adjacencia* CriaAdjacencia(int v, float peso);
